@@ -153,14 +153,18 @@ public class AutorDialog extends javax.swing.JDialog {
     private void loadTabela() {
         DefaultTableModel model = (DefaultTableModel) Tabela.getModel();
         model.setNumRows(0);//limpar a tabela
-        //Buscar a Lista
-        for (Autor autor : autorDAO.findAll() ) {
-            String linha[] = {
-                "" + autor.getAutor_id(),
-                autor.getNome()
-            };
-            model.addRow(linha);
-            
+        try {
+            //Buscar a Lista
+            for (Autor autor : autorDAO.findAll() ) {
+                String linha[] = {
+                    "" + autor.getAutor_id(),
+                    autor.getNome()
+                };
+                model.addRow(linha);
+                
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(AutorDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

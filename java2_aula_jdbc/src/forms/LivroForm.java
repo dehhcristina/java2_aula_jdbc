@@ -14,6 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Autor;
 import model.Editora;
 import model.Livro;
 
@@ -28,7 +29,7 @@ public class LivroForm extends javax.swing.JFrame {
      */
     public LivroForm() {
         initComponents();
-       BCodigo.setEnabled(false);
+        BCodigo.setEnabled(false);
         try {
             livroDAO = new LivroDAO();
             editoraDAO = new EditoraDAO();
@@ -61,7 +62,7 @@ public class LivroForm extends javax.swing.JFrame {
         CBEditora = new javax.swing.JComboBox<>();
         btRemover = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Tabela1 = new javax.swing.JTable();
         txtAutorID = new javax.swing.JTextField();
         BBuscar = new javax.swing.JButton();
         BDel = new javax.swing.JButton();
@@ -124,7 +125,7 @@ public class LivroForm extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tabela1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -135,7 +136,7 @@ public class LivroForm extends javax.swing.JFrame {
                 "ID", "Nome do Autor"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(Tabela1);
 
         txtAutorID.setEnabled(false);
 
@@ -150,7 +151,11 @@ public class LivroForm extends javax.swing.JFrame {
         BDel.setEnabled(false);
 
         BAdd.setText("Add");
-        BAdd.setEnabled(false);
+        BAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BAddActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -246,8 +251,8 @@ public class LivroForm extends javax.swing.JFrame {
 
     private void BotaoSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoSalvarActionPerformed
         Livro livro = new Livro();
-        livro.setEditora( (Editora) CBEditora.getSelectedItem());
-        livro.setTitulo( BTitulo.getText());
+        livro.setEditora((Editora) CBEditora.getSelectedItem());
+        livro.setTitulo(BTitulo.getText());
         livro.setAno(Integer.parseInt(BAno.getText()));
         livro.setDescricao(BDescricao.getText());
         try {
@@ -267,7 +272,7 @@ public class LivroForm extends javax.swing.JFrame {
     private void TabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaMouseClicked
         String id = Tabela.getValueAt(Tabela.getSelectedRow(), 0).toString();
         int livro_id = Integer.parseInt(id);
-        
+
         try {
             Livro livro = livroDAO.findById(livro_id);
             BCodigo.setText("" + livro_id);
@@ -275,12 +280,26 @@ public class LivroForm extends javax.swing.JFrame {
             BAno.setText("" + livro.getAno());
             BDescricao.setText(livro.getDescricao());
             CBEditora.getModel().setSelectedItem(livro.getEditora());
-            
+
+            loadTabelaAutores(livro);
+
         } catch (Exception ex) {
             Logger.getLogger(LivroForm.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.mode = "UPD";
     }//GEN-LAST:event_TabelaMouseClicked
+
+    private void loadTabelaAutores(Livro livro) throws Exception {
+        DefaultTableModel model = (DefaultTableModel) Tabela1.getModel();
+        model.setNumRows(0);
+        for (Autor autor : livro.getAutores()) {
+            String[] linha = {
+                "" + autor.getAutor_id(),
+                autor.getNome()
+            };
+            model.addRow(linha);
+        }
+    }
 
     private void btRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRemoverActionPerformed
         int opt = JOptionPane.showConfirmDialog(this, "Excluir registro?");
@@ -294,7 +313,7 @@ public class LivroForm extends javax.swing.JFrame {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-            
+
             limparCampos();
             loadTabela();
         }
@@ -306,14 +325,26 @@ public class LivroForm extends javax.swing.JFrame {
         txtAutorID.setText("" + dialog.getAutorId());
     }//GEN-LAST:event_BBuscarActionPerformed
 
+    private void BAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BAddActionPerformed
+        Autor autor = new Autor();
+        Livro livro = new Livro();
+        autor.setAutor_id(Integer.parseInt(txtAutorID.getText()));
+        livro.setLivro_id(Integer.parseInt(BCodigo.getText()));
+
+        try {
+            livroDAO.saveAutorLivro(autor, livro);
+        } catch (Exception ex) {
+            Logger.getLogger(LivroForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_BAddActionPerformed
+
     public void limparCampos() {
         BTitulo.setText("");
         BAno.setText("");
         BDescricao.setText("");
         this.mode = "INS";
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */
@@ -348,30 +379,30 @@ public class LivroForm extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void loadComboBox() {
         try {
             //PROGRAMAR A BUSCA DE DADOS
-            DefaultComboBoxModel model = new DefaultComboBoxModel( new Vector(editoraDAO.findAll()));
+            DefaultComboBoxModel model = new DefaultComboBoxModel(new Vector(editoraDAO.findAll()));
             CBEditora.setModel(model);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     private void loadTabela() {
         DefaultTableModel model = (DefaultTableModel) Tabela.getModel();
         model.setNumRows(0);
-        
+
         try {
-            for(Livro livro : livroDAO.findAll()) {
+            for (Livro livro : livroDAO.findAll()) {
                 String linha[] = {
-                "" + livro.getLivro_id(),
+                    "" + livro.getLivro_id(),
                     livro.getTitulo(),
                     livro.getEditora().getNome(),
-                "" + livro.getAno()
+                    "" + livro.getAno()
                 };
-                
+
                 model.addRow(linha);
             }
         } catch (Exception ex) {
@@ -392,6 +423,7 @@ public class LivroForm extends javax.swing.JFrame {
     private javax.swing.JButton BotaoSalvar;
     private javax.swing.JComboBox<String> CBEditora;
     private javax.swing.JTable Tabela;
+    private javax.swing.JTable Tabela1;
     private javax.swing.JButton btRemover;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -400,7 +432,6 @@ public class LivroForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField txtAutorID;
     // End of variables declaration//GEN-END:variables
 }
