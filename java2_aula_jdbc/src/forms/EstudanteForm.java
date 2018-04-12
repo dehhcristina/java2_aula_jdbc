@@ -127,9 +127,17 @@ public class EstudanteForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Nome", "Data da Matricula", "Status"
+                "ID", "Nome", "Curso", "Data da Matricula", "Status"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tabela.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabelaMouseClicked(evt);
@@ -296,11 +304,13 @@ public class EstudanteForm extends javax.swing.JFrame {
         
         try {
             for(Estudante estudante : estudanteDAO.findAll()) {
+                SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+                String data = f.format(estudante.getData_matricula());
                 String linha[] = {
                 "" + estudante.getEstudante_id(),
                     estudante.getNome(),
                     estudante.getCurso(),
-                "" + estudante.getData_matricula(),
+                "" + data,
                     estudante.getStatus()
                 };
                 

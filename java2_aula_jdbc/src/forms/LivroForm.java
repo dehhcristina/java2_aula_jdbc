@@ -7,6 +7,8 @@ package forms;
 
 import DAO.EditoraDAO;
 import DAO.LivroDAO;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -148,7 +150,11 @@ public class LivroForm extends javax.swing.JFrame {
         });
 
         BDel.setText("Del");
-        BDel.setEnabled(false);
+        BDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BDelActionPerformed(evt);
+            }
+        });
 
         BAdd.setText("Add");
         BAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -333,10 +339,38 @@ public class LivroForm extends javax.swing.JFrame {
 
         try {
             livroDAO.saveAutorLivro(autor, livro);
+            livro = livroDAO.findById(livro.getLivro_id());
+            loadTabelaAutores(livro);
         } catch (Exception ex) {
             Logger.getLogger(LivroForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_BAddActionPerformed
+
+    private void BDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BDelActionPerformed
+        int opt = JOptionPane.showConfirmDialog(this, "Excluir registro?");
+
+        if (opt == JOptionPane.YES_OPTION) {
+            Autor autor = new Autor();
+            Livro livro = new Livro();
+            autor.setAutor_id(Integer.parseInt(txtAutorID.getText()));
+            livro.setLivro_id(Integer.parseInt(BCodigo.getText()));
+            try {
+                livroDAO.deleteAutorLivro(livro, autor);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+
+            txtAutorID.setText("");
+            BCodigo.setText("");
+            this.mode = "INS";
+
+            try {
+                loadTabelaAutores(livro);
+            } catch (Exception ex) {
+                Logger.getLogger(LivroForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_BDelActionPerformed
 
     public void limparCampos() {
         BTitulo.setText("");

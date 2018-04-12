@@ -5,7 +5,7 @@
  */
 package forms;
 
-import DAO.AutorDAO;
+import dao.AutorDAO;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;

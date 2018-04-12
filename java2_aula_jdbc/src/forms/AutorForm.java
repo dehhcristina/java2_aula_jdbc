@@ -5,7 +5,7 @@
  */
 package forms;
 
-import DAO.AutorDAO;
+import dao.AutorDAO;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -14,7 +14,7 @@ import model.Autor;
 
 /**
  *
- * @author Débora Cristina
+ * @author Loren
  */
 public class AutorForm extends javax.swing.JFrame {
 
@@ -23,7 +23,8 @@ public class AutorForm extends javax.swing.JFrame {
      */
     public AutorForm() {
         initComponents();
-        //INstancia a classe DAO
+        AutorIDtxt.setEnabled(false);
+        //Instancia a classe DAO
         try {
             autorDAO = new AutorDAO();
         } catch (Exception ex) {
@@ -40,28 +41,15 @@ public class AutorForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        Nome = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        botaoNovo = new javax.swing.JButton();
-        botaoSalvar = new javax.swing.JButton();
-        botaoRemover = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        Tabela = new javax.swing.JTable();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        Nometxt = new javax.swing.JTextField();
+        btNovo = new javax.swing.JButton();
+        btSalvar = new javax.swing.JButton();
+        btRemover = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabela = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        AutorIDtxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -72,92 +60,160 @@ public class AutorForm extends javax.swing.JFrame {
 
         jLabel2.setText("Nome:");
 
-        botaoNovo.setText("Novo");
-
-        botaoSalvar.setText("Salvar");
-        botaoSalvar.addActionListener(new java.awt.event.ActionListener() {
+        btNovo.setText("Limpar");
+        btNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botaoSalvarActionPerformed(evt);
+                btNovoActionPerformed(evt);
             }
         });
 
-        botaoRemover.setText("Remover");
+        btSalvar.setText("Salvar");
+        btSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSalvarActionPerformed(evt);
+            }
+        });
 
-        Tabela.setModel(new javax.swing.table.DefaultTableModel(
+        btRemover.setText("Remover");
+        btRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRemoverActionPerformed(evt);
+            }
+        });
+
+        tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
                 "ID", "Nome"
             }
-        ));
-        jScrollPane2.setViewportView(Tabela);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabela);
+
+        jLabel1.setText("Autor ID:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btNovo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btSalvar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btRemover))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(Nome)
-                        .addGap(6, 6, 6)))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(161, 161, 161)
-                .addComponent(botaoNovo)
-                .addGap(18, 18, 18)
-                .addComponent(botaoSalvar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(botaoRemover)
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(AutorIDtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(Nometxt, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(botaoNovo)
-                    .addComponent(botaoSalvar)
-                    .addComponent(botaoRemover))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(AutorIDtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Nometxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btNovo)
+                    .addComponent(btSalvar)
+                    .addComponent(btRemover))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void botaoSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarActionPerformed
+    private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
         Autor autor = new Autor();
-        autor.setNome( Nome.getText());
-        
+        autor.setNome(Nometxt.getText());
         try {
-            autorDAO.save(autor);
+            if(mode.equals("INS")) {
+                autorDAO.save(autor);
+            } else if (mode.equals("UPD")) {
+                autor.setAutor_id(Integer.parseInt(AutorIDtxt.getText()));
+                autorDAO.update(autor);
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-        Listar();
-    }//GEN-LAST:event_botaoSalvarActionPerformed
+        listar();
+    }//GEN-LAST:event_btSalvarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        Listar();
+        listar();
     }//GEN-LAST:event_formWindowOpened
 
-     public void Listar() {
-         DefaultTableModel model = (DefaultTableModel) Tabela.getModel();
-        //limpar tabela
+    private void tabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaMouseClicked
+        int selected = tabela.getSelectedRow();
+        AutorIDtxt.setText(tabela.getValueAt(selected, 0).toString());
+        Nometxt.setText(tabela.getValueAt(selected, 1).toString());
+        this.mode = "UPD";
+    }//GEN-LAST:event_tabelaMouseClicked
+
+    private void btNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovoActionPerformed
+        AutorIDtxt.setText("");
+        Nometxt.setText("");
+        this.mode = "INS";
+    }//GEN-LAST:event_btNovoActionPerformed
+
+    private void btRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRemoverActionPerformed
+        int opt = JOptionPane.showConfirmDialog(this, "Excluir registro?");
+        if (opt == JOptionPane.YES_OPTION) {
+            Autor autor = new Autor();
+            autor.setAutor_id(Integer.parseInt(AutorIDtxt.getText()));
+
+            try {
+                autorDAO.delete(autor);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        AutorIDtxt.setText("");
+        Nometxt.setText("");
+        this.mode = "INS";
+        listar();
+        }
+    }//GEN-LAST:event_btRemoverActionPerformed
+    
+    public void listar() {
+        DefaultTableModel model = (DefaultTableModel) tabela.getModel();
+        // Limpar JTable
         model.setNumRows(0);
         try {
-            //busca lista de objetos
+            // Busca lista de objetos
             for (Autor autor : autorDAO.findAll()) {
                 String linha[] = {"" + autor.getAutor_id(), autor.getNome()};
                 model.addRow(linha);
@@ -166,7 +222,6 @@ public class AutorForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
-    
     /**
      * @param args the command line arguments
      */
@@ -201,17 +256,17 @@ public class AutorForm extends javax.swing.JFrame {
             }
         });
     }
-
+    private String mode = "INS";
     private AutorDAO autorDAO;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField Nome;
-    private javax.swing.JTable Tabela;
-    private javax.swing.JButton botaoNovo;
-    private javax.swing.JButton botaoRemover;
-    private javax.swing.JButton botaoSalvar;
+    private javax.swing.JTextField AutorIDtxt;
+    private javax.swing.JTextField Nometxt;
+    private javax.swing.JButton btNovo;
+    private javax.swing.JButton btRemover;
+    private javax.swing.JButton btSalvar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }

@@ -44,6 +44,7 @@ public class EstudanteDAO {
              //DATA SQL
             p.setDate(3, new java.sql.Date(estudante.getData_matricula().getTime()));
              p.setString(4, estudante.getStatus());
+             p.setInt(5, estudante.getEstudante_id());
              p.execute();
          } catch (SQLException ex) {
              throw new Exception(ex);

@@ -1,4 +1,4 @@
-package DAO;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Autor;
+import model.Livro;
 import util.ConnectionJDBC;
 
 public class AutorDAO {
@@ -16,14 +17,15 @@ public class AutorDAO {
     Connection connection;
     
     public AutorDAO() throws Exception {
-        //Obtem uma conexao
+        //Obtém uma conexão
         connection = ConnectionJDBC.getConnection();
     }
-    //modelo com generator
+    
     public void save(Autor autor) throws Exception {
         String SQL = "INSERT INTO AUTOR(NOME) VALUES (?)";
         try {
             PreparedStatement p = connection.prepareStatement(SQL);
+            //p.setInt(1, autor.getAutor_id());
             p.setString(1, autor.getNome());
             p.execute();
             p.close();
@@ -34,42 +36,73 @@ public class AutorDAO {
     
     public void update(Autor autor) throws Exception {
         String SQL = "UPDATE AUTOR SET NOME=? WHERE AUTOR_ID=?";
-         try {
-             PreparedStatement p = connection.prepareStatement(SQL);
-             p.setString(1, autor.getNome());
-             p.setInt(2, autor.getAutor_id());
-             p.execute();
-             p.close();
-         } catch (SQLException ex) {
-             throw new Exception(ex);
-         }
+        try {
+            PreparedStatement p = connection.prepareStatement(SQL);
+            p.setString(1, autor.getNome());
+            p.setInt(2, autor.getAutor_id());
+            p.execute();
+            p.close();
+        } catch(SQLException ex) {
+            throw new Exception(ex);
+        }
     }
     
-    public void delete(Autor autor) {
-        
+    public void delete(Autor autor) throws Exception {
+     String SQL = "DELETE FROM AUTOR WHERE AUTOR_ID=?";
+     PreparedStatement p;
+        try {
+            p = connection.prepareStatement(SQL);
+            p.setInt(1, autor.getAutor_id());
+            p.execute();
+            p.close();
+        } catch (SQLException ex) {
+            throw new Exception(ex);
+        }
     }
     
+    public void deleteAutorLivro(Autor autor, Livro livro) throws Exception {
+       String SQL = "DELETE FROM AUTOR_LIVRO WHERE AUTOR_ID=? AND LIVRO_ID=?";
+       PreparedStatement p;
+       try {
+           p = connection.prepareStatement(SQL);
+           p.setInt(1, autor.getAutor_id());
+           p.setInt(2, livro.getLivro_id());
+           p.execute();
+           p.close();
+       } catch (SQLException ex) {
+           throw new Exception(ex);
+       }
+   }
+    
+    public Autor findById(int id) {
+        return new Autor();
+    }
     
     public List<Autor> findAll() throws Exception {
+        // Lista para manter os valores do ResultSet
         List<Autor> list = new ArrayList<>();
         Autor objeto;
         String SQL = "SELECT * FROM AUTOR ORDER BY AUTOR_ID";
-        try{
+        try {
+            // Prepara a SQL
             PreparedStatement p = connection.prepareStatement(SQL);
+            // Executa a SQL e mantém os valores no ResultSet rs
             ResultSet rs = p.executeQuery();
-            while (rs.next()) {
+            // Navega pelos registros no rs
+            while(rs.next()) {
+                // Instancia a classe autor e informa os valores do BD
                 objeto = new Autor();
                 objeto.setAutor_id(rs.getInt("autor_id"));
                 objeto.setNome(rs.getString("nome"));
-                
+                //Inclui na lista
                 list.add(objeto);
             }
             rs.close();
             p.close();
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             throw new Exception(ex);
         }
-        
+        // Retorna a lista
         return list;
     }
 }

@@ -76,8 +76,16 @@ public class LivroDAO {
         }
     }
 
-    public void deleteAutorLivro() {
+    public void deleteAutorLivro(Livro livro, Autor autor) throws Exception {
         //implementar
+        String SQL = "DELETE FROM AUTOR_LIVRO WHERE LIVRO_ID=? AND AUTOR_ID=?";
+        try{
+            PreparedStatement p = connection.prepareStatement(SQL);
+            p.setInt(1, livro.getLivro_id());
+            p.setInt(2, autor.getAutor_id());
+        }catch (SQLException ex){
+            throw new Exception(ex);
+        }
     }
     
     public Livro findById(int id) throws Exception {
