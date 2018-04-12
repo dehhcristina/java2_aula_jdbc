@@ -83,6 +83,8 @@ public class LivroDAO {
             PreparedStatement p = connection.prepareStatement(SQL);
             p.setInt(1, livro.getLivro_id());
             p.setInt(2, autor.getAutor_id());
+            p.execute();
+            p.close();
         }catch (SQLException ex){
             throw new Exception(ex);
         }
