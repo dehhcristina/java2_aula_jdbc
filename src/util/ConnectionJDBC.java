@@ -19,7 +19,7 @@ public class ConnectionJDBC {
                 throw new Exception(ex);
             }
             String servidor = "localhost";
-            String database = "C:\\Users\\Acer\\Desktop\\Técnico de informática\\2º semestre\\Java II\\banco\\aula06.fdb";
+            String database = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\aula06.fdb";
             String user = "SYSDBA";
             String password = "masterkey";
             String url = "jdbc:firebirdsql:" + servidor + "/3050:" + database + "?encoding=win1252";
